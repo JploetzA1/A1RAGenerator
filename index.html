@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A1 Technician 1-on-1 Builder v1.0.0</title>
+<title>A1 Ride-Along Email Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -13,7 +13,6 @@
     --gold-dim: #7A5F28;
     --surface: #111D30;
     --surface2: #162238;
-    --surface3: #0E1A2E;
     --border: rgba(201,168,76,0.18);
     --border-bright: rgba(201,168,76,0.45);
     --text: #EEE8D8;
@@ -22,7 +21,9 @@
     --success: #3DB87A;
     --radius: 10px;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--navy);
@@ -31,681 +32,483 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px 80px;
+    padding: 40px 20px 60px;
     background-image:
       radial-gradient(ellipse 60% 40% at 80% 10%, rgba(201,168,76,0.07) 0%, transparent 60%),
       radial-gradient(ellipse 40% 30% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
   }
-
-  .wrap { width: 100%; max-width: 700px; }
-
-  /* PASSWORD SCREEN */
-  #password-screen {
-    position: fixed; inset: 0; background: var(--navy); z-index: 999;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 2rem;
-    background-image:
-      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(201,168,76,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
-  }
-  #password-screen.hidden { display: none; }
-  .pw-card {
-    background: var(--surface); border: 1px solid var(--border-bright);
-    border-radius: 20px; padding: 48px 44px; max-width: 420px; width: 100%; text-align: center;
-    animation: fadeUp 0.5s ease both;
-  }
-  .pw-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; font-family: 'DM Mono', monospace; }
-  .pw-title { font-size: 24px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 6px; }
-  .pw-title strong { font-weight: 600; color: var(--gold-light); }
-  .pw-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; }
-  .pw-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 13px 16px; font-size: 16px; letter-spacing: 0.08em;
-    font-family: 'DM Mono', monospace; color: var(--text); outline: none; text-align: center;
-    transition: border-color 0.15s, box-shadow 0.15s; margin-bottom: 12px;
-  }
-  .pw-input:focus { border-color: var(--border-bright); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
-  .pw-input.error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(224,85,85,0.1); animation: shake 0.3s ease; }
-  .pw-btn {
-    width: 100%; background: var(--gold); color: var(--navy); border: none;
-    border-radius: var(--radius); padding: 13px; font-size: 14px; font-weight: 600;
-    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.15s;
-  }
-  .pw-btn:hover { background: var(--gold-light); }
-  .pw-error { font-size: 12px; color: var(--danger); margin-top: 10px; min-height: 18px; font-family: 'DM Mono', monospace; }
-  .pw-tagline { font-size: 11px; color: var(--gold-dim); font-family: 'DM Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 28px; opacity: 0.7; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
   /* HEADER */
-  .header { text-align: center; margin-bottom: 36px; animation: fadeDown 0.5s ease both; }
-  .header-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-family: 'DM Mono', monospace; }
-  .header h1 { font-size: 26px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeDown 0.5s ease both;
+  }
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
   .header h1 strong { font-weight: 600; color: var(--gold-light); }
-  .header p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .header p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
 
   /* CARD */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin-bottom: 20px; animation: fadeUp 0.5s ease both 0.1s; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 620px;
+    animation: fadeUp 0.5s ease both 0.1s;
+  }
 
-  /* SECTION LABEL */
-  .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-dim); font-family: 'DM Mono', monospace; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-top: 24px; }
+  /* FORM */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 14px;
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
   .section-label:first-child { margin-top: 0; }
 
-  /* FIELDS */
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
   .field-row.single { grid-template-columns: 1fr; }
+
   .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .field label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
   .field input, .field select {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 11px 14px; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--text);
-    transition: border-color 0.15s, box-shadow 0.15s; outline: none; width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    width: 100%;
   }
   .field input::placeholder { color: var(--muted); opacity: 0.5; }
-  .field input:focus, .field select:focus { border-color: var(--border-bright); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
-  .field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; opacity: 0.7; }
+  .field input:focus, .field select:focus {
+    border-color: var(--border-bright);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+  .field input.error, .field select.error { border-color: var(--danger); }
   .field select { appearance: none; -webkit-appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A8070' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
   .field select option { background: #162238; color: #EEE8D8; }
+  .field select.placeholder-shown { color: rgba(138,128,112,0.5); }
+  /* Date input calendar icon styling */
+  .field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; opacity: 0.7; }
+  .field input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
-  /* DUMP BOX */
-  .dump-wrap { position: relative; margin-bottom: 4px; }
-  .dump-box {
-    width: 100%; min-height: 180px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px 14px 48px 14px; font-size: 14px;
-    font-family: 'DM Sans', sans-serif; color: var(--text); resize: vertical; outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s; line-height: 1.7;
+  /* GENERATE BUTTON */
+  .btn-row { margin-top: 28px; display: flex; gap: 12px; }
+  .btn-generate {
+    flex: 1;
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
   }
-  .dump-box::placeholder { color: var(--muted); opacity: 0.5; }
-  .dump-box:focus { border-color: var(--border-bright); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
-  .dump-box.listening { border-color: #E05555; box-shadow: 0 0 0 3px rgba(224,85,85,0.12); }
-
-  /* MIC BUTTON */
-  .mic-btn {
-    position: absolute; bottom: 12px; right: 12px;
-    display: flex; align-items: center; gap: 7px;
-    background: var(--surface3); border: 1px solid var(--border);
-    border-radius: 8px; padding: 7px 14px; font-size: 12px;
-    font-family: 'DM Sans', sans-serif; color: var(--muted);
-    cursor: pointer; transition: all 0.15s; font-weight: 500;
+  .btn-generate:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-generate:active { transform: translateY(0); }
+  .btn-clear {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
   }
-  .mic-btn:hover { border-color: var(--border-bright); color: var(--text); }
-  .mic-btn.active { background: rgba(224,85,85,0.12); border-color: rgba(224,85,85,0.5); color: #F08080; }
-  .mic-btn .mic-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-  .mic-btn.active .mic-dot { animation: pulse 1s ease infinite; }
-  .mic-hint { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 6px; opacity: 0.6; }
-  .mic-no-support { font-size: 11px; color: var(--danger); font-family: 'DM Mono', monospace; margin-top: 6px; display: none; }
-
-  /* BUTTONS */
-  .btn-row { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
-  .btn-primary { flex: 1; min-width: 180px; background: var(--gold); color: var(--navy); border: none; border-radius: var(--radius); padding: 14px 24px; font-size: 14px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.1s; }
-  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-  .btn-secondary { background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; }
-  .btn-secondary:hover { border-color: var(--border-bright); color: var(--text); }
-
-  /* VALIDATION */
-  .val-msg { display: none; background: rgba(224,85,85,0.1); border: 1px solid rgba(224,85,85,0.3); border-radius: var(--radius); padding: 12px 16px; margin-top: 14px; font-size: 13px; color: #F08080; }
-  .val-msg.show { display: block; }
-
-  /* LOADING */
-  .loading-wrap { display: none; text-align: center; padding: 32px; }
-  .loading-wrap.show { display: block; }
-  .loading-spinner { display: inline-block; width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 14px; }
-  .loading-text { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .btn-clear:hover { border-color: var(--border-bright); color: var(--text); }
 
   /* OUTPUT */
-  .output-wrap { display: none; animation: fadeUp 0.4s ease both; }
-  .output-wrap.show { display: block; }
-
-  .output-section {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; margin-bottom: 14px; overflow: hidden;
+  .output-card {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 620px;
+    margin-top: 20px;
+    display: none;
+    animation: fadeUp 0.4s ease both;
   }
-  .output-section-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 18px; border-bottom: 1px solid var(--border);
+  .output-card.visible { display: block; }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .output-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+  }
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--gold-light);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .copy-btn:hover { background: rgba(201,168,76,0.22); }
+  .copy-btn.copied { background: rgba(61,184,122,0.15); border-color: rgba(61,184,122,0.4); color: var(--success); }
+
+  .subject-line {
     background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 16px;
   }
-  .output-section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-family: 'DM Mono', monospace; }
-  .section-copy-btn {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(201,168,76,0.08); border: 1px solid var(--border);
-    border-radius: 6px; padding: 6px 12px; font-size: 11px;
-    font-family: 'DM Sans', sans-serif; color: var(--gold-dim);
-    cursor: pointer; transition: all 0.15s; font-weight: 500;
+  .subject-lbl {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
   }
-  .section-copy-btn:hover { background: rgba(201,168,76,0.18); color: var(--gold-light); border-color: var(--border-bright); }
-  .section-copy-btn.copied { background: rgba(61,184,122,0.12); border-color: rgba(61,184,122,0.35); color: var(--success); }
-  .output-section-body { padding: 18px; font-size: 14px; line-height: 1.8; color: var(--text); white-space: pre-wrap; font-family: 'DM Sans', sans-serif; }
+  .subject-text { font-size: 14px; font-weight: 500; color: var(--text); }
 
-  /* REGEN ROW */
-  .regen-row { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
-  .regen-note { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 10px; opacity: 0.7; }
+  .email-body {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    font-family: 'DM Sans', sans-serif;
+  }
 
-  /* FOOTER */
-  .footer { margin-top: 36px; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; font-family: 'DM Mono', monospace; opacity: 0.4; text-align: center; }
+  /* VALIDATION MSG */
+  .validation-msg {
+    display: none;
+    background: rgba(224,85,85,0.12);
+    border: 1px solid rgba(224,85,85,0.3);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #F08080;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .validation-msg.show { display: block; }
 
   /* ANIMATIONS */
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeUp   { from { opacity: 0; transform: translateY(14px);  } to { opacity: 1; transform: translateY(0); } }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
-  .ver-badge { position: fixed; bottom: 16px; right: 16px; font-size: 10px; font-family: "DM Mono", monospace; color: var(--gold-dim); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; z-index: 1000; opacity: 0.6; }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 36px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    font-family: 'DM Mono', monospace;
+    opacity: 0.5;
+  }
 </style>
 </head>
 <body>
 
-<!-- PASSWORD SCREEN -->
-<div id="password-screen">
-  <div class="pw-card">
-    <div class="pw-eyebrow">A1 Garage Door Services</div>
-    <div class="pw-title">Technician <strong>1-on-1</strong> Builder</div>
-    <div class="pw-sub">This tool is for authorized managers only.<br>Enter your access code to continue.</div>
-    <input class="pw-input" type="password" id="pw-input" placeholder="Access code" onkeydown="if(event.key==='Enter')checkPassword()" />
-    <button class="pw-btn" onclick="checkPassword()">Enter</button>
-    <div class="pw-error" id="pw-error"></div>
-    <div class="pw-tagline">A1 From Day 1 &nbsp;·&nbsp; v1.0.3</div>
+<div class="header">
+  <div class="header-eyebrow">A1 Garage Door Services</div>
+  <h1><strong>Ride-Along</strong> Email Generator</h1>
+  <p>Fill in the fields below and get a ready-to-send email in seconds.</p>
+</div>
+
+<div class="card">
+
+  <div class="section-label">Candidate Info</div>
+  <div class="field-row">
+    <div class="field">
+      <label>First Name</label>
+      <input type="text" id="cand-first" placeholder="Jane" />
+    </div>
+    <div class="field">
+      <label>Last Name</label>
+      <input type="text" id="cand-last" placeholder="Smith" />
+    </div>
+  </div>
+  <div class="field-row single">
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="cand-phone" placeholder="5055551234" />
+    </div>
+  </div>
+
+  <div class="section-label">Ride-Along Details</div>
+  <div class="field-row">
+    <div class="field">
+      <label>Day of Week</label>
+      <select id="ra-day" class="placeholder-shown" onchange="this.classList.remove('placeholder-shown')">
+        <option value="" disabled selected>Select a day</option>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+        <option>Sunday</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="ra-date" />
+    </div>
+  </div>
+
+  <div class="section-label">Technician / Installer</div>
+  <div class="field-row single">
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="tech-name" placeholder="Mike Johnson" />
+    </div>
+  </div>
+  <div class="field-row single">
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="tech-phone" placeholder="5055559876" />
+    </div>
+  </div>
+
+  <div class="validation-msg" id="val-msg"></div>
+
+  <div class="btn-row">
+    <button class="btn-generate" onclick="generate()">Generate Email</button>
+    <button class="btn-clear" onclick="clearAll()">Clear</button>
   </div>
 </div>
 
-<div class="wrap">
-
-  <div class="header">
-    <div class="header-eyebrow">A1 Garage Door Services</div>
-    <h1>Technician <strong>1-on-1</strong> Builder</h1>
-    <p>Fill in the header, dump your notes, and get a formatted Inova-ready review.</p>
+<div class="output-card" id="output-card">
+  <div class="output-header">
+    <span class="output-title">✓ Email Ready</span>
+    <button class="copy-btn" id="copy-btn" onclick="copyEmail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy to Clipboard
+    </button>
   </div>
-
-  <!-- INPUT CARD -->
-  <div class="card" id="input-card">
-
-    <div class="section-label">Review Header</div>
-    <div class="field-row">
-      <div class="field">
-        <label>Technician Name</label>
-        <input type="text" id="tech-name" placeholder="First Last" />
-      </div>
-      <div class="field">
-        <label>Role</label>
-        <select id="tech-role">
-          <option value="" disabled selected>Select role</option>
-          <option>Maintenance Technician</option>
-          <option>Installer</option>
-          <option>Senior Technician</option>
-          <option>Lead Installer</option>
-          <option>Apprentice</option>
-        </select>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>Date</label>
-        <input type="date" id="review-date" />
-      </div>
-      <div class="field">
-        <label>Manager Name</label>
-        <input type="text" id="manager-name" placeholder="Your name" />
-      </div>
-    </div>
-
-    <div class="section-label" style="margin-top:28px;">Your Notes</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Type or dictate everything — wins, KPIs, concerns, personal goals, follow-ups, all of it. Don't worry about formatting. Claude will handle the rest.</p>
-
-    <div class="dump-wrap">
-      <textarea class="dump-box" id="notes-dump" placeholder="Example: Mike had a great month, his close rate was 42%, he mentioned he's trying to save for a house so he's been really motivated. He missed two required photos on jobs. Wants to get into training others eventually. Follow up on the photo issue next month..."></textarea>
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">
-        <span class="mic-dot"></span>
-        <span id="mic-label">Tap to speak</span>
-      </button>
-    </div>
-    <div class="mic-hint" id="mic-hint">Mic appends to your notes — you can also type freely.</div>
-    <div class="mic-no-support" id="mic-no-support">Speech recognition not supported in this browser. Try Chrome.</div>
-
-    <div class="val-msg" id="val-msg"></div>
-
-    <div class="btn-row">
-      <button class="btn-primary" id="generate-btn" onclick="generate()">Build My 1-on-1</button>
-      <button class="btn-secondary" onclick="clearAll()">Clear</button>
-    </div>
+  <div class="subject-line">
+    <div class="subject-lbl">Subject Line</div>
+    <div class="subject-text" id="out-subject"></div>
   </div>
-
-  <!-- LOADING -->
-  <div class="loading-wrap" id="loading-wrap">
-    <div class="loading-spinner"></div>
-    <div class="loading-text" id="loading-text">Reviewing your notes...</div>
-  </div>
-
-  <!-- OUTPUT -->
-  <div class="output-wrap" id="output-wrap">
-
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-family:'DM Mono',monospace;">✓ Review Ready — Paste each section into Inova</div>
-    </div>
-
-    <div class="output-section" id="sec-checkin">
-      <div class="output-section-header">
-        <span class="output-section-title">✅ Check-in / Journal Review / Wins</span>
-        <button class="section-copy-btn" onclick="copySection('checkin-body', this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy
-        </button>
-      </div>
-      <div class="output-section-body" id="checkin-body"></div>
-    </div>
-
-    <div class="output-section" id="sec-performance">
-      <div class="output-section-header">
-        <span class="output-section-title">📊 Monthly Performance Review</span>
-        <button class="section-copy-btn" onclick="copySection('performance-body', this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy
-        </button>
-      </div>
-      <div class="output-section-body" id="performance-body"></div>
-    </div>
-
-    <div class="output-section" id="sec-goals">
-      <div class="output-section-header">
-        <span class="output-section-title">🎯 S.M.A.R.T. Goals</span>
-        <button class="section-copy-btn" onclick="copySection('goals-body', this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy
-        </button>
-      </div>
-      <div class="output-section-body" id="goals-body"></div>
-    </div>
-
-    <div class="output-section" id="sec-values">
-      <div class="output-section-header">
-        <span class="output-section-title">💡 A1 Core Values</span>
-        <button class="section-copy-btn" onclick="copySection('values-body', this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy
-        </button>
-      </div>
-      <div class="output-section-body" id="values-body"></div>
-    </div>
-
-    <div class="output-section" id="sec-actions">
-      <div class="output-section-header">
-        <span class="output-section-title">🛠 Action Items / Follow-ups / Additional Training</span>
-        <button class="section-copy-btn" onclick="copySection('actions-body', this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy
-        </button>
-      </div>
-      <div class="output-section-body" id="actions-body"></div>
-    </div>
-
-    <!-- REGENERATE -->
-    <div class="card" style="margin-top:8px;">
-      <div class="regen-note">Not quite right? Add more context below and regenerate.</div>
-      <div class="dump-wrap">
-        <textarea class="dump-box" id="regen-notes" placeholder="Add anything that was missing or needs to change..." style="min-height:100px;"></textarea>
-        <button class="mic-btn" id="regen-mic-btn" onclick="toggleRegenMic()">
-          <span class="mic-dot"></span>
-          <span id="regen-mic-label">Tap to speak</span>
-        </button>
-      </div>
-      <div class="btn-row" style="margin-top:16px;">
-        <button class="btn-primary" onclick="regenerate()">Regenerate</button>
-        <button class="btn-secondary" onclick="newReview()">Start New Review</button>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="footer">A1 Garage Door Services &mdash; Internal Tool &mdash; HR use only</div>
+  <div class="email-body" id="out-body"></div>
 </div>
+
+<div class="footer">A1 Garage Door Services &mdash; Internal Tool</div>
 
 <script>
-// ── PASSWORD ─────────────────────────────────────────────────────────────────
-function checkPassword() {
-  var val = document.getElementById('pw-input').value.trim().toUpperCase();
-  var inp = document.getElementById('pw-input');
-  if (val === 'A1FROMDAY1') {
-    document.getElementById('password-screen').classList.add('hidden');
-  } else {
-    inp.classList.add('error');
-    document.getElementById('pw-error').textContent = 'Incorrect access code. Contact your Area Manager.';
-    setTimeout(function() { inp.classList.remove('error'); }, 600);
-    inp.value = '';
-    inp.focus();
-  }
+function formatPhone(raw) {
+  var digits = raw.replace(/\D/g, '');
+  if (digits.length === 11 && digits[0] === '1') digits = digits.slice(1);
+  if (digits.length !== 10) return null;
+  return digits.slice(0,3) + '-' + digits.slice(3,6) + '-' + digits.slice(6);
 }
 
-// ── MIC ──────────────────────────────────────────────────────────────────────
-var recognition = null;
-var isListening = false;
-var activeTarget = null;
-
-function initMic(targetId, btnId, labelId) {
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    document.getElementById('mic-no-support').style.display = 'block';
-    document.getElementById('mic-hint').style.display = 'none';
-    return false;
-  }
-  if (recognition) { recognition.stop(); recognition = null; }
-
-  recognition = new SpeechRecognition();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
-
-  var savedText = recognition._savedText || '';
-  recognition.onresult = function(e) {
-    var interim = '';
-    var final = '';
-    for (var i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) {
-        final += e.results[i][0].transcript + ' ';
-      } else {
-        interim += e.results[i][0].transcript;
-      }
-    }
-    if (final) { savedText += final; recognition._savedText = savedText; }
-    var box = document.getElementById(activeTarget);
-    box.value = savedText + interim;
-  };
-
-  recognition.onerror = function() { stopMic(btnId, labelId); };
-  recognition.onend = function() { if (isListening) recognition.start(); };
-
-  activeTarget = targetId;
-  return true;
-}
-
-function toggleMic() {
-  if (isListening && activeTarget === 'notes-dump') {
-    stopMic('mic-btn', 'mic-label');
-  } else {
-    if (initMic('notes-dump', 'mic-btn', 'mic-label')) startMic('mic-btn', 'mic-label');
-  }
-}
-
-function toggleRegenMic() {
-  if (isListening && activeTarget === 'regen-notes') {
-    stopMic('regen-mic-btn', 'regen-mic-label');
-  } else {
-    if (initMic('regen-notes', 'regen-mic-btn', 'regen-mic-label')) startMic('regen-mic-btn', 'regen-mic-label');
-  }
-}
-
-function startMic(btnId, labelId) {
-  isListening = true;
-  // Capture any text already in the box so we don't overwrite it
-  var box = document.getElementById(activeTarget);
-  recognition._savedText = box.value;
-  recognition.start();
-  var btn = document.getElementById(btnId);
-  btn.classList.add('active');
-  document.getElementById(labelId).textContent = 'Listening...';
-  var box = document.getElementById(activeTarget);
-  box.classList.add('listening');
-}
-
-function stopMic(btnId, labelId) {
-  isListening = false;
-  if (recognition) { recognition.stop(); recognition = null; }
-  var btn = document.getElementById(btnId);
-  btn.classList.remove('active');
-  document.getElementById(labelId).textContent = 'Tap to speak';
-  ['notes-dump','regen-notes'].forEach(function(id) {
-    var b = document.getElementById(id);
-    if (b) b.classList.remove('listening');
+function toTitleCase(str) {
+  return str.trim().replace(/\w\S*/g, function(w) {
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
   });
 }
 
-// ── COPY ─────────────────────────────────────────────────────────────────────
-function copySection(bodyId, btn) {
-  var text = document.getElementById(bodyId).textContent;
-  navigator.clipboard.writeText(text).then(function() {
-    btn.classList.add('copied');
-    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 18 4 13"/></svg> Copied!';
-    setTimeout(function() {
-      btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
-    }, 2500);
-  });
-}
-
-// ── VALIDATION ───────────────────────────────────────────────────────────────
 function showError(msg) {
   var el = document.getElementById('val-msg');
   el.textContent = msg;
   el.classList.add('show');
 }
-function clearError() { document.getElementById('val-msg').classList.remove('show'); }
 
-function getDateFormatted() {
-  var raw = document.getElementById('review-date').value;
-  if (!raw) return '';
-  var p = raw.split('-');
-  return parseInt(p[1]) + '/' + parseInt(p[2]) + '/' + p[0].slice(2);
+function clearError() {
+  document.getElementById('val-msg').classList.remove('show');
 }
 
-// ── BUILD PROMPT ─────────────────────────────────────────────────────────────
-function buildPrompt(notes, extra) {
-  var name    = document.getElementById('tech-name').value.trim();
-  var role    = document.getElementById('tech-role').value;
-  var date    = getDateFormatted();
-  var manager = document.getElementById('manager-name').value.trim();
-
-  var fullNotes = notes + (extra ? '\n\nAdditional context: ' + extra : '');
-
-  return `You are an HR-safe 1-on-1 review writer for A1 Garage Door Services. 
-
-Generate a complete technician 1-on-1 review based on the manager's raw notes below. Use ONLY the approved A1 Core Values listed. Output plain text only — no markdown, no asterisks, no bold markup. Use the exact section headers and emoji shown in the template.
-
-TECHNICIAN: ${name || '[Name not provided]'}
-ROLE: ${role || '[Role not provided]'}
-DATE: ${date || '[Date not provided]'}
-MANAGER: ${manager || '[Manager not provided]'}
-
-MANAGER'S RAW NOTES:
-${fullNotes}
-
----
-RULES:
-- Clean up grammar, spelling, and capitalization silently
-- If KPIs are mentioned, list each on its own line as "Metric: Value" under a "KPIs:" block
-- SMART Goals must use exactly: 1 Month, 1 Year, 5 Year
-- Core Values: ONLY use from this list — include only ones demonstrated: Raise the Standard, Put People First, Deliver Our Promise
-- Personal goals (house, car, family, debt) are HR-safe to include in Check-in if employee-initiated — no dollar amounts
-- Do NOT add sections beyond what's in the template
-- Output ONLY the five sections below, nothing else, no preamble
-
-OUTPUT FORMAT (use exactly):
-
-✅ Check-in / Journal Review / Wins
-
-[content]
-
-📊 Monthly Performance Review
-
-KPIs:
-[metric: value lines if provided]
-
-Role-Specific Observations:
-
-[content]
-
-🎯 S.M.A.R.T. Goals
-
-1 Month: [goal]
-1 Year: [goal]
-5 Year: [goal]
-
-💡 A1 Core Values — A1 From Day 1
-
-Raise the Standard – [explanation if demonstrated]
-Put People First – [explanation if demonstrated]
-Deliver Our Promise – [explanation if demonstrated]
-
-🛠 Action Items / Follow-ups / Additional Training
-
-[content]`;
-}
-
-// ── PARSE OUTPUT ─────────────────────────────────────────────────────────────
-function parseOutput(text) {
-  var sections = {
-    checkin: '',
-    performance: '',
-    goals: '',
-    values: '',
-    actions: ''
-  };
-
-  var markers = [
-    { key: 'checkin',     emoji: '✅' },
-    { key: 'performance', emoji: '📊' },
-    { key: 'goals',       emoji: '🎯' },
-    { key: 'values',      emoji: '💡' },
-    { key: 'actions',     emoji: '🛠' }
-  ];
-
-  var positions = markers.map(function(m) {
-    return { key: m.key, pos: text.indexOf(m.emoji) };
-  }).filter(function(m) { return m.pos > -1; }).sort(function(a,b) { return a.pos - b.pos; });
-
-  for (var i = 0; i < positions.length; i++) {
-    var start = positions[i].pos;
-    var end = i + 1 < positions.length ? positions[i+1].pos : text.length;
-    var chunk = text.slice(start, end).trim();
-    // Strip the header line
-    var lines = chunk.split('\n');
-    lines.shift(); // remove emoji header line
-    sections[positions[i].key] = lines.join('\n').trim();
-  }
-
-  return sections;
-}
-
-// ── API CALL ─────────────────────────────────────────────────────────────────
-var lastNotes = '';
-
-async function callClaude(prompt) {
-  var loadingTexts = [
-    'Reading your notes...',
-    'Writing check-in section...',
-    'Building SMART goals...',
-    'Mapping core values...',
-    'Finalizing review...'
-  ];
-  var li = 0;
-  var lt = document.getElementById('loading-text');
-  var interval = setInterval(function() {
-    li = (li + 1) % loadingTexts.length;
-    lt.textContent = loadingTexts[li];
-  }, 1800);
-
-  try {
-    var response = await fetch('https://1on1formproxy.jploetz.workers.dev', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        password: 'A1FROMDAY1',
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    var data = await response.json();
-    clearInterval(interval);
-    // Check for errors from Worker
-    if (data.error) { throw new Error('Worker error: ' + data.error); }
-    var text = (data.content || []).filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('');
-    if (!text) { throw new Error('Empty response from API. Response: ' + JSON.stringify(data)); }
-    console.log('Claude response:', text.slice(0, 200));
-    return text;
-  } catch (err) {
-    clearInterval(interval);
-    throw err;
-  }
-}
-
-function showOutput(parsed) {
-  document.getElementById('checkin-body').textContent     = parsed.checkin;
-  document.getElementById('performance-body').textContent = parsed.performance;
-  document.getElementById('goals-body').textContent       = parsed.goals;
-  document.getElementById('values-body').textContent      = parsed.values;
-  document.getElementById('actions-body').textContent     = parsed.actions;
-
-  document.getElementById('loading-wrap').classList.remove('show');
-  document.getElementById('output-wrap').classList.add('show');
-  document.getElementById('output-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-async function generate() {
+function generate() {
   clearError();
-  if (isListening) stopMic('mic-btn', 'mic-label');
 
-  var name  = document.getElementById('tech-name').value.trim();
-  var notes = document.getElementById('notes-dump').value.trim();
+  var candFirst = document.getElementById('cand-first').value.trim();
+  var candLast  = document.getElementById('cand-last').value.trim();
+  var candPhoneRaw = document.getElementById('cand-phone').value.trim();
+  var raDay  = document.getElementById('ra-day').value.trim();
+  var raDateRaw = document.getElementById('ra-date').value.trim();
+
+  // Format date from YYYY-MM-DD to M/D/YY
+  var raDate = '';
+  if (raDateRaw) {
+    var parts = raDateRaw.split('-');
+    var yr = parts[0].slice(2);
+    var mo = parseInt(parts[1]);
+    var dy = parseInt(parts[2]);
+    raDate = mo + '/' + dy + '/' + yr;
+  }
+  var techName = document.getElementById('tech-name').value.trim();
+  var techPhoneRaw = document.getElementById('tech-phone').value.trim();
+
+  // Validation
   var missing = [];
-  if (!name)  missing.push('Technician Name');
-  if (!notes) missing.push('Notes');
-  if (missing.length) { showError('Please fill in: ' + missing.join(', ')); return; }
+  if (!candFirst) missing.push('Candidate First Name');
+  if (!candLast)  missing.push('Candidate Last Name');
+  if (!candPhoneRaw) missing.push('Candidate Phone');
+  if (!raDay)    missing.push('Day of Week');
+  if (!raDateRaw) missing.push('Date');
+  if (!techName) missing.push('Technician Name');
+  if (!techPhoneRaw) missing.push('Technician Phone');
 
-  lastNotes = notes;
-  document.getElementById('input-card').style.opacity = '0.5';
-  document.getElementById('input-card').style.pointerEvents = 'none';
-  document.getElementById('loading-wrap').classList.add('show');
-  document.getElementById('output-wrap').classList.remove('show');
-
-  try {
-    var result = await callClaude(buildPrompt(notes, ''));
-    var parsed = parseOutput(result);
-    document.getElementById('input-card').style.opacity = '';
-    document.getElementById('input-card').style.pointerEvents = '';
-    showOutput(parsed);
-  } catch (err) {
-    document.getElementById('input-card').style.opacity = '';
-    document.getElementById('input-card').style.pointerEvents = '';
-    document.getElementById('loading-wrap').classList.remove('show');
-    showError('Error: ' + err.message);
+  if (missing.length) {
+    showError('Please fill in: ' + missing.join(', '));
+    return;
   }
+
+  var candPhone = formatPhone(candPhoneRaw);
+  var techPhone = formatPhone(techPhoneRaw);
+
+  if (!candPhone) { showError('Candidate phone number doesn\'t look right — enter 10 digits.'); return; }
+  if (!techPhone) { showError('Technician phone number doesn\'t look right — enter 10 digits.'); return; }
+
+  // Clean inputs
+  candFirst = toTitleCase(candFirst);
+  candLast  = toTitleCase(candLast);
+  var candFull = candFirst + ' ' + candLast;
+  techName = toTitleCase(techName);
+
+  // Build subject
+  var subject = 'Ride-Along Details for ' + raDay + ' ' + raDate + ' \u2014 ' + candFull;
+
+  // Build body
+  var body =
+'Hi ' + candFull + ' \u2014 ' + candPhone + '\n\n' +
+'We\'re excited to have you join us for a ride-along.\n\n' +
+'Goal\n' +
+'Give you a real look at a day in the life of an A1 Garage Door Service technician/installer so you can decide if this career is a good fit for you.\n\n' +
+'Ride-Along Details\n' +
+'\u2022 Date: ' + raDay + ' ' + raDate + '\n' +
+'\u2022 Ride-Along Technician: ' + techName + ' \u2014 ' + techPhone + '\n\n' +
+'For Our Tech/Installer\n' +
+'Thank you for assisting our candidate with this ride-along. You were selected because we value your expertise and the way you explain and demonstrate the work. Your guidance will help this candidate determine whether this is the right career path and whether they\u2019d like to join A1 Garage Door Service.\n\n' +
+'For the Candidate\n' +
+'\u2022 We hope you enjoy your ride-along. This is part of our hiring process to help you decide if you can see yourself in the technician/installer role at A1 Garage Door Service.\n' +
+'\u2022 Day-before (or sooner): Please contact your tech/installer before 7:00 PM MST to confirm the time and meeting location for your ride-along.\n\n' +
+'\uD83D\uDEA8 PLEASE REPLY TO THIS EMAIL ONCE DONE SO WE KNOW IT\'S SET UP \uD83D\uDEA8\n\n' +
+'\u2022 Feel free to ask questions\u2014your tech/installer is a wealth of knowledge.\n' +
+'\u2022 Attire & What to Bring: Wear a plain black polo or T-shirt and blue jeans. Tennis shoes are recommended. Sunscreen and a water bottle are highly recommended.\n\n' +
+'Thanks, and we look forward to seeing you on ' + raDay + ' ' + raDate + '.';
+
+  document.getElementById('out-subject').textContent = subject;
+  document.getElementById('out-body').textContent = body;
+
+  var card = document.getElementById('output-card');
+  card.classList.add('visible');
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Reset copy button
+  var btn = document.getElementById('copy-btn');
+  btn.classList.remove('copied');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy to Clipboard';
 }
 
-async function regenerate() {
-  if (isListening) stopMic('regen-mic-btn', 'regen-mic-label');
-  var extra = document.getElementById('regen-notes').value.trim();
-  document.getElementById('output-wrap').classList.remove('show');
-  document.getElementById('loading-wrap').classList.add('show');
+function copyEmail() {
+  var subject = document.getElementById('out-subject').textContent;
+  var body = document.getElementById('out-body').textContent;
+  var full = 'Subject: ' + subject + '\n\n' + body;
 
-  try {
-    var result = await callClaude(buildPrompt(lastNotes, extra));
-    var parsed = parseOutput(result);
-    document.getElementById('regen-notes').value = '';
-    showOutput(parsed);
-  } catch (err) {
-    document.getElementById('loading-wrap').classList.remove('show');
-    alert('Something went wrong. Try again.');
-  }
-}
-
-function newReview() {
-  if (isListening) stopMic('regen-mic-btn', 'regen-mic-label');
-  document.getElementById('output-wrap').classList.remove('show');
-  document.getElementById('input-card').style.opacity = '';
-  document.getElementById('input-card').style.pointerEvents = '';
-  ['tech-name','review-date','manager-name','notes-dump','regen-notes'].forEach(function(id) {
-    document.getElementById(id).value = '';
+  navigator.clipboard.writeText(full).then(function() {
+    var btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 18 4 13"/></svg> Copied!';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy to Clipboard';
+    }, 2500);
+  }).catch(function() {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea');
+    ta.value = full;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    var btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied!';
   });
-  document.getElementById('tech-role').selectedIndex = 0;
-  clearError();
-  lastNotes = '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function clearAll() {
-  if (isListening) stopMic('mic-btn', 'mic-label');
-  ['tech-name','review-date','manager-name','notes-dump'].forEach(function(id) {
+  ['cand-first','cand-last','cand-phone','tech-name','tech-phone'].forEach(function(id) {
     document.getElementById(id).value = '';
   });
-  document.getElementById('tech-role').selectedIndex = 0;
+  var dayEl = document.getElementById('ra-day');
+  dayEl.value = '';
+  dayEl.classList.add('placeholder-shown');
+  document.getElementById('ra-date').value = '';
   clearError();
+  document.getElementById('output-card').classList.remove('visible');
 }
+
+// Allow Enter key to trigger generate
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') generate();
+});
 </script>
-<div class="ver-badge">v1.0.3</div>
 </body>
 </html>
