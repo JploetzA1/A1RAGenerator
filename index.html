@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1 Ride-Along Email Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1628;
+    --gold: #C9A84C;
+    --gold-light: #E8C86A;
+    --gold-dim: #7A5F28;
+    --surface: #111D30;
+    --surface2: #162238;
+    --border: rgba(201,168,76,0.18);
+    --border-bright: rgba(201,168,76,0.45);
+    --text: #EEE8D8;
+    --muted: #8A8070;
+    --danger: #E05555;
+    --success: #3DB87A;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeDown 0.5s ease both;
+  }
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .header h1 strong { font-weight: 600; color: var(--gold-light); }
+  .header p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 620px;
+    animation: fadeUp 0.5s ease both 0.1s;
+  }
+
+  /* FORM */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 14px;
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field-row.single { grid-template-columns: 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .field input, .field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    width: 100%;
+  }
+  .field input::placeholder { color: var(--muted); opacity: 0.5; }
+  .field input:focus, .field select:focus {
+    border-color: var(--border-bright);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+  .field input.error, .field select.error { border-color: var(--danger); }
+  .field select { appearance: none; -webkit-appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A8070' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  .field select option { background: #162238; color: #EEE8D8; }
+  .field select.placeholder-shown { color: rgba(138,128,112,0.5); }
+  /* Date input calendar icon styling */
+  .field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; opacity: 0.7; }
+  .field input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+  /* GENERATE BUTTON */
+  .btn-row { margin-top: 28px; display: flex; gap: 12px; }
+  .btn-generate {
+    flex: 1;
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-generate:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-generate:active { transform: translateY(0); }
+  .btn-clear {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-clear:hover { border-color: var(--border-bright); color: var(--text); }
+
+  /* OUTPUT */
+  .output-card {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 620px;
+    margin-top: 20px;
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+  .output-card.visible { display: block; }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .output-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+  }
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--gold-light);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .copy-btn:hover { background: rgba(201,168,76,0.22); }
+  .copy-btn.copied { background: rgba(61,184,122,0.15); border-color: rgba(61,184,122,0.4); color: var(--success); }
+
+  .subject-line {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .subject-lbl {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .subject-text { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  .email-body {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* VALIDATION MSG */
+  .validation-msg {
+    display: none;
+    background: rgba(224,85,85,0.12);
+    border: 1px solid rgba(224,85,85,0.3);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #F08080;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .validation-msg.show { display: block; }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 36px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    font-family: 'DM Mono', monospace;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">A1 Garage Door Services</div>
+  <h1><strong>Ride-Along</strong> Email Generator</h1>
+  <p>Fill in the fields below and get a ready-to-send email in seconds.</p>
+</div>
+
+<div class="card">
+
+  <div class="section-label">Candidate Info</div>
+  <div class="field-row">
+    <div class="field">
+      <label>First Name</label>
+      <input type="text" id="cand-first" placeholder="Jane" />
+    </div>
+    <div class="field">
+      <label>Last Name</label>
+      <input type="text" id="cand-last" placeholder="Smith" />
+    </div>
+  </div>
+  <div class="field-row single">
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="cand-phone" placeholder="5055551234" />
+    </div>
+  </div>
+
+  <div class="section-label">Ride-Along Details</div>
+  <div class="field-row">
+    <div class="field">
+      <label>Day of Week</label>
+      <select id="ra-day" class="placeholder-shown" onchange="this.classList.remove('placeholder-shown')">
+        <option value="" disabled selected>Select a day</option>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+        <option>Sunday</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="ra-date" />
+    </div>
+  </div>
+
+  <div class="section-label">Technician / Installer</div>
+  <div class="field-row single">
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="tech-name" placeholder="Mike Johnson" />
+    </div>
+  </div>
+  <div class="field-row single">
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="tech-phone" placeholder="5055559876" />
+    </div>
+  </div>
+
+  <div class="validation-msg" id="val-msg"></div>
+
+  <div class="btn-row">
+    <button class="btn-generate" onclick="generate()">Generate Email</button>
+    <button class="btn-clear" onclick="clearAll()">Clear</button>
+  </div>
+</div>
+
+<div class="output-card" id="output-card">
+  <div class="output-header">
+    <span class="output-title">✓ Email Ready</span>
+    <button class="copy-btn" id="copy-btn" onclick="copyEmail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy to Clipboard
+    </button>
+  </div>
+  <div class="subject-line">
+    <div class="subject-lbl">Subject Line</div>
+    <div class="subject-text" id="out-subject"></div>
+  </div>
+  <div class="email-body" id="out-body"></div>
+</div>
+
+<div class="footer">A1 Garage Door Services &mdash; Internal Tool</div>
+
+<script>
+function formatPhone(raw) {
+  var digits = raw.replace(/\D/g, '');
+  if (digits.length === 11 && digits[0] === '1') digits = digits.slice(1);
+  if (digits.length !== 10) return null;
+  return digits.slice(0,3) + '-' + digits.slice(3,6) + '-' + digits.slice(6);
+}
+
+function toTitleCase(str) {
+  return str.trim().replace(/\w\S*/g, function(w) {
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  });
+}
+
+function showError(msg) {
+  var el = document.getElementById('val-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function clearError() {
+  document.getElementById('val-msg').classList.remove('show');
+}
+
+function generate() {
+  clearError();
+
+  var candFirst = document.getElementById('cand-first').value.trim();
+  var candLast  = document.getElementById('cand-last').value.trim();
+  var candPhoneRaw = document.getElementById('cand-phone').value.trim();
+  var raDay  = document.getElementById('ra-day').value.trim();
+  var raDateRaw = document.getElementById('ra-date').value.trim();
+
+  // Format date from YYYY-MM-DD to M/D/YY
+  var raDate = '';
+  if (raDateRaw) {
+    var parts = raDateRaw.split('-');
+    var yr = parts[0].slice(2);
+    var mo = parseInt(parts[1]);
+    var dy = parseInt(parts[2]);
+    raDate = mo + '/' + dy + '/' + yr;
+  }
+  var techName = document.getElementById('tech-name').value.trim();
+  var techPhoneRaw = document.getElementById('tech-phone').value.trim();
+
+  // Validation
+  var missing = [];
+  if (!candFirst) missing.push('Candidate First Name');
+  if (!candLast)  missing.push('Candidate Last Name');
+  if (!candPhoneRaw) missing.push('Candidate Phone');
+  if (!raDay)    missing.push('Day of Week');
+  if (!raDateRaw) missing.push('Date');
+  if (!techName) missing.push('Technician Name');
+  if (!techPhoneRaw) missing.push('Technician Phone');
+
+  if (missing.length) {
+    showError('Please fill in: ' + missing.join(', '));
+    return;
+  }
+
+  var candPhone = formatPhone(candPhoneRaw);
+  var techPhone = formatPhone(techPhoneRaw);
+
+  if (!candPhone) { showError('Candidate phone number doesn\'t look right — enter 10 digits.'); return; }
+  if (!techPhone) { showError('Technician phone number doesn\'t look right — enter 10 digits.'); return; }
+
+  // Clean inputs
+  candFirst = toTitleCase(candFirst);
+  candLast  = toTitleCase(candLast);
+  var candFull = candFirst + ' ' + candLast;
+  techName = toTitleCase(techName);
+
+  // Build subject
+  var subject = 'Ride-Along Details for ' + raDay + ' ' + raDate + ' \u2014 ' + candFull;
+
+  // Build body
+  var body =
+'Hi ' + candFull + ' \u2014 ' + candPhone + '\n\n' +
+'We\'re excited to have you join us for a ride-along.\n\n' +
+'Goal\n' +
+'Give you a real look at a day in the life of an A1 Garage Door Service technician/installer so you can decide if this career is a good fit for you.\n\n' +
+'Ride-Along Details\n' +
+'\u2022 Date: ' + raDay + ' ' + raDate + '\n' +
+'\u2022 Ride-Along Technician: ' + techName + ' \u2014 ' + techPhone + '\n\n' +
+'For Our Tech/Installer\n' +
+'Thank you for assisting our candidate with this ride-along. You were selected because we value your expertise and the way you explain and demonstrate the work. Your guidance will help this candidate determine whether this is the right career path and whether they\u2019d like to join A1 Garage Door Service.\n\n' +
+'For the Candidate\n' +
+'\u2022 We hope you enjoy your ride-along. This is part of our hiring process to help you decide if you can see yourself in the technician/installer role at A1 Garage Door Service.\n' +
+'\u2022 Day-before (or sooner): Please contact your tech/installer before 7:00 PM MST to confirm the time and meeting location for your ride-along.\n\n' +
+'\uD83D\uDEA8 PLEASE REPLY TO THIS EMAIL ONCE DONE SO WE KNOW IT\'S SET UP \uD83D\uDEA8\n\n' +
+'\u2022 Feel free to ask questions\u2014your tech/installer is a wealth of knowledge.\n' +
+'\u2022 Attire & What to Bring: Wear a plain black polo or T-shirt and blue jeans. Tennis shoes are recommended. Sunscreen and a water bottle are highly recommended.\n\n' +
+'Thanks, and we look forward to seeing you on ' + raDay + ' ' + raDate + '.';
+
+  document.getElementById('out-subject').textContent = subject;
+  document.getElementById('out-body').textContent = body;
+
+  var card = document.getElementById('output-card');
+  card.classList.add('visible');
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Reset copy button
+  var btn = document.getElementById('copy-btn');
+  btn.classList.remove('copied');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy to Clipboard';
+}
+
+function copyEmail() {
+  var subject = document.getElementById('out-subject').textContent;
+  var body = document.getElementById('out-body').textContent;
+  var full = 'Subject: ' + subject + '\n\n' + body;
+
+  navigator.clipboard.writeText(full).then(function() {
+    var btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 18 4 13"/></svg> Copied!';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy to Clipboard';
+    }, 2500);
+  }).catch(function() {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea');
+    ta.value = full;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    var btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied!';
+  });
+}
+
+function clearAll() {
+  ['cand-first','cand-last','cand-phone','tech-name','tech-phone'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  var dayEl = document.getElementById('ra-day');
+  dayEl.value = '';
+  dayEl.classList.add('placeholder-shown');
+  document.getElementById('ra-date').value = '';
+  clearError();
+  document.getElementById('output-card').classList.remove('visible');
+}
+
+// Allow Enter key to trigger generate
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
